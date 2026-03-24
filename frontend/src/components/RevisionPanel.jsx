@@ -1,39 +1,61 @@
-﻿import { useState } from 'react';
+import { useEffect, useState } from 'react'
 
 export default function RevisionPanel({ projeKlasoru, onRevize }) {
-  const [dosyaAdi, setDosyaAdi] = useState("");
-  const [hataMesaji, setHataMesaji] = useState("");
-  const [yukleniyor, setYukleniyor] = useState(false);
+  const [dosyaAdi, setDosyaAdi] = useState('')
+  const [hataMesaji, setHataMesaji] = useState('')
+  const [yukleniyor, setYukleniyor] = useState(false)
+
+  useEffect(() => {
+    setDosyaAdi('')
+    setHataMesaji('')
+    setYukleniyor(false)
+  }, [projeKlasoru])
+
+  if (!projeKlasoru) return null
 
   const gonder = async () => {
-    if (!dosyaAdi || !hataMesaji) return alert("Dosya adı ve hata mesajı gerekli.");
-    setYukleniyor(true);
-    await onRevize(dosyaAdi, hataMesaji);
-    setYukleniyor(false);
-    setHataMesaji("");
-  };
+    if (yukleniyor) return
+    if (typeof onRevize !== 'function') return
+    if (!dosyaAdi.trim() || !hataMesaji.trim()) return
 
-  if (!projeKlasoru) return null;
+    setYukleniyor(true)
+
+    try {
+      await onRevize(dosyaAdi.trim(), hataMesaji.trim())
+      setDosyaAdi('')
+      setHataMesaji('')
+    } finally {
+      setYukleniyor(false)
+    }
+  }
 
   return (
-    <div style={{ marginTop: "20px", padding: "20px", backgroundColor: "#1a130e", border: "1px solid #ff5722", borderRadius: "8px" }}>
-      <h3 style={{ color: "#ff5722", marginTop: 0 }}>🛠️ Hata Bildir / Revize Et</h3>
-      <input 
-        placeholder="Dosya Adı (Örn: style.css)" 
-        value={dosyaAdi} onChange={e => setDosyaAdi(e.target.value)}
-        style={{ width: "95%", padding: "10px", marginBottom: "10px", backgroundColor: "#2d2d2d", color: "white", border: "1px solid #444" }}
+    <section className="panel">
+      <div className="panel-header">
+        <h3>Revizyon</h3>
+        <span>{projeKlasoru}</span>
+      </div>
+
+      <input
+        value={dosyaAdi}
+        onChange={(event) => setDosyaAdi(event.target.value)}
+        placeholder="Dosya yolu"
       />
-      <textarea 
-        placeholder="Hata nedir veya ne değişmeli?" 
-        value={hataMesaji} onChange={e => setHataMesaji(e.target.value)}
-        style={{ width: "95%", height: "60px", padding: "10px", backgroundColor: "#2d2d2d", color: "white", border: "1px solid #444" }}
+
+      <textarea
+        value={hataMesaji}
+        onChange={(event) => setHataMesaji(event.target.value)}
+        placeholder="Ne düzeltilmeli?"
       />
-      <button 
-        onClick={gonder} disabled={yukleniyor}
-        style={{ width: "100%", padding: "10px", backgroundColor: "#ff5722", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontWeight: "bold" }}
+
+      <button
+        type="button"
+        className="primary"
+        onClick={gonder}
+        disabled={yukleniyor || !dosyaAdi.trim() || !hataMesaji.trim()}
       >
-        {yukleniyor ? "Güncelleniyor..." : "Düzeltmeyi Uygula"}
+        {yukleniyor ? 'Revize ediliyor...' : 'Revizyon uygula'}
       </button>
-    </div>
-  );
+    </section>
+  )
 }

@@ -1,36 +1,89 @@
-﻿import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react'
 
-export default function ActivityLog({ logs }) {
-  const logEndRef = useRef(null);
+function formatLogEntry(entry, index) {
+  if (typeof entry === 'string') {
+    return {
+      key: `log-${index}-${entry}`,
+      time: '',
+      message: entry,
+    }
+  }
 
-  // Yeni log geldiğinde otomatik olarak en aşağı kaydır
+  if (entry && typeof entry === 'object') {
+    const timeValue = entry.time || entry.zaman || entry.timestamp || ''
+    const messageValue =
+      entry.message ||
+      entry.mesaj ||
+      entry.log ||
+      (() => {
+        try {
+          return JSON.stringify(entry)
+        } catch {
+          return String(entry)
+        }
+      })()
+
+    const keyBase =
+      entry.id ||
+      `${timeValue}-${messageValue}` ||
+      `log-${index}`
+
+    return {
+      key: `log-${index}-${keyBase}`,
+      time: timeValue,
+      message: messageValue,
+    }
+  }
+
+  return {
+    key: `log-${index}-${String(entry)}`,
+    time: '',
+    message: String(entry),
+  }
+}
+
+function displayTime(value) {
+  if (!value) return ''
+  const parsed = new Date(value)
+  if (Number.isNaN(parsed.getTime())) return String(value)
+  return parsed.toLocaleTimeString()
+}
+
+export default function ActivityLog({ logs = [] }) {
+  const logEndRef = useRef(null)
+
+  const normalizedLogs = useMemo(
+    () => logs.map((log, index) => formatLogEntry(log, index)),
+    [logs]
+  )
+
   useEffect(() => {
-    logEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
-
+    logEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [normalizedLogs])
 
   return (
-    <div style={{ 
-      marginTop: "20px", 
-      padding: "15px", 
-      backgroundColor: "#000", 
-      border: "1px solid #333", 
-      borderRadius: "8px",
-      fontFamily: "Courier New, monospace",
-      fontSize: "12px",
-      boxShadow: "0 0 10px rgba(0,255,0,0.1)"
-    }}>
-      <h4 style={{ color: "#007bff", marginTop: 0, marginBottom: "10px", borderBottom: "1px solid #222", paddingBottom: "5px" }}>
-        📡 Tectora Canlı İşlem Akışı
-      </h4>
-      <div style={{ maxHeight: "200px", overflowY: "auto", display: "flex", flexDirection: "column", gap: "5px" }}>
-        {logs.map((log, i) => (
-          <div key={i} style={{ color: log.startsWith("✅") ? "#00ff00" : log.startsWith("🛠️") ? "#007bff" : log.startsWith("⚠️") ? "#ff9800" : "#00ff00" }}>
-            <span style={{ color: "#444" }}>[{new Date().toLocaleTimeString()}]</span> {log}
+    <section className="panel">
+      <div className="panel-header">
+        <h3>Canlı işlem akışı</h3>
+        <span>{normalizedLogs.length} kayıt</span>
+      </div>
+
+      <div className="log-list">
+        {normalizedLogs.length === 0 && (
+          <p className="empty-state">Henüz log yok.</p>
+        )}
+
+        {normalizedLogs.map((log) => (
+          <div key={log.key} className="log-item">
+            {log.time ? (
+              <span className="log-time">[{displayTime(log.time)}]</span>
+            ) : null}
+            <span>{log.message}</span>
           </div>
         ))}
+
         <div ref={logEndRef} />
       </div>
-    </div>
-  );
+    </section>
+  )
 }

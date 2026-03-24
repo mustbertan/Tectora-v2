@@ -1,31 +1,20 @@
-﻿export default function AnalysisPanel({ analizSonucu, uretimeBasla, uretiyor, uretimVerisi }) {
-  if (!analizSonucu) return null;
+export default function AnalysisPanel({ analizSonucu }) {
+  if (!analizSonucu) return null
 
   return (
-    <div style={{ marginTop: "20px", padding: "20px", backgroundColor: "#1a1a1a", border: "1px solid #333", borderRadius: "8px" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "start", marginBottom: "15px", borderBottom: "1px solid #333", paddingBottom: "10px" }}>
-        <h3 style={{ color: "#007bff", margin: 0 }}>Tectora Analiz Raporu</h3>
-        <div style={{ fontSize: "11px", color: "#888", textAlign: "right", lineHeight: "1.4" }}>
-          <div>Giriş: {analizSonucu.maliyet_verisi?.input} | Çıkış: {analizSonucu.maliyet_verisi?.output}</div>
-          <div style={{ fontSize: "13px", marginTop: "4px" }}>
-            Maliyet: <span style={{ color: "#4CAF50", fontWeight: "bold" }}>${analizSonucu.maliyet_verisi?.tahmini_dolar}</span>
-          </div>
-        </div>
+    <section className="panel">
+      <div className="panel-header">
+        <h3>Analiz raporu</h3>
+        <span>
+          ${analizSonucu.maliyet_verisi?.tahmini_dolar ?? 0}
+        </span>
       </div>
-      
-      <div style={{ whiteSpace: "pre-wrap", marginBottom: "20px", fontSize: "14px", lineHeight: "1.6" }}>
-        {analizSonucu.analiz_sonucu}
+      <div className="analysis-meta">
+        <span>Input: {analizSonucu.maliyet_verisi?.input ?? 0}</span>
+        <span>Output: {analizSonucu.maliyet_verisi?.output ?? 0}</span>
+        {analizSonucu.maliyet_verisi?.not && <span>{analizSonucu.maliyet_verisi.not}</span>}
       </div>
-      
-      {!uretimVerisi && (
-        <button 
-          onClick={uretimeBasla} 
-          disabled={uretiyor} 
-          style={{ width: "100%", padding: "15px", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "8px", cursor: "pointer", fontSize: "16px", fontWeight: "bold" }}
-        >
-          {uretiyor ? "⚙️ Üretiliyor..." : "🚀 Tectora, Bu Projeyi Üret!"}
-        </button>
-      )}
-    </div>
-  );
+      <pre className="pre-wrap">{analizSonucu.analiz_sonucu}</pre>
+    </section>
+  )
 }

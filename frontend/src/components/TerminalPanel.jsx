@@ -1,38 +1,64 @@
-﻿import { useState } from 'react';
+import { useEffect, useState } from 'react'
 
 export default function TerminalPanel({ projeKlasoru, onCalistir }) {
-  const [komut, setKomut] = useState("");
-  const [cikti, setCikti] = useState(null);
-  const [yukleniyor, setYukleniyor] = useState(false);
+  const [komut, setKomut] = useState('dir')
+  const [cikti, setCikti] = useState(null)
+  const [yukleniyor, setYukleniyor] = useState(false)
+
+  useEffect(() => {
+    setCikti(null)
+    setKomut('dir')
+    setYukleniyor(false)
+  }, [projeKlasoru])
+
+  if (!projeKlasoru) return null
 
   const calistir = async () => {
-    if (!komut) return;
-    setYukleniyor(true);
-    const result = await onCalistir(komut);
-    setCikti(result);
-    setYukleniyor(false);
-  };
+    if (yukleniyor) return
+    if (typeof onCalistir !== 'function') return
+    if (!komut.trim()) return
 
-  if (!projeKlasoru) return null;
+    setYukleniyor(true)
+
+    try {
+      const result = await onCalistir(komut.trim())
+      setCikti(result)
+    } finally {
+      setYukleniyor(false)
+    }
+  }
+
+  const outputText = cikti
+    ? [
+        cikti.stdout ? `STDOUT:\n${cikti.stdout}` : '',
+        cikti.stderr ? `STDERR:\n${cikti.stderr}` : '',
+        typeof cikti.exit_code !== 'undefined' ? `EXIT CODE: ${cikti.exit_code}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n\n')
+    : ''
 
   return (
-    <div style={{ marginTop: "20px", padding: "15px", backgroundColor: "#1e1e1e", border: "1px solid #007bff", borderRadius: "8px" }}>
-      <h3 style={{ color: "#007bff", marginTop: 0, fontSize: "14px" }}>💻 Terminal (Sandbox: {projeKlasoru})</h3>
-      <div style={{ display: "flex", gap: "10px" }}>
-        <input 
-          value={komut} onChange={e => setKomut(e.target.value)}
-          placeholder="Komut girin (Örn: npm start, ls, python -m http.server)"
-          style={{ flex: 1, padding: "10px", backgroundColor: "#000", color: "#00ff00", border: "1px solid #333", fontFamily: "monospace" }}
+    <section className="panel">
+      <div className="panel-header">
+        <h3>Sandbox terminal</h3>
+        <span>{projeKlasoru}</span>
+      </div>
+
+      <div className="button-row compact">
+        <input
+          value={komut}
+          onChange={(event) => setKomut(event.target.value)}
+          placeholder="Çalıştırılacak komut"
         />
-        <button onClick={calistir} disabled={yukleniyor} style={{ padding: "10px 20px", backgroundColor: "#007bff", color: "white", border: "none", cursor: "pointer" }}>
-          {yukleniyor ? "..." : "Çalıştır"}
+        <button type="button" onClick={calistir} disabled={yukleniyor || !komut.trim()}>
+          {yukleniyor ? 'Çalışıyor...' : 'Komutu çalıştır'}
         </button>
       </div>
+
       {cikti && (
-        <pre style={{ marginTop: "10px", padding: "10px", backgroundColor: "#000", color: "#ccc", fontSize: "11px", overflowX: "auto", borderLeft: "3px solid #007bff" }}>
-          {cikti.stdout || cikti.stderr}
-        </pre>
+        <pre className="terminal-output">{outputText || 'Çıktı yok.'}</pre>
       )}
-    </div>
-  );
+    </section>
+  )
 }

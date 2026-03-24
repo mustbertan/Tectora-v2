@@ -1,19 +1,15 @@
+from __future__ import annotations
+
+import importlib.util
 import os
-from dotenv import load_dotenv
-import anthropic
 
-# .env dosyasından şifreni al
-load_dotenv()
-api_key = os.environ.get("ANTHROPIC_API_KEY")
-client = anthropic.Anthropic(api_key=api_key)
 
-try:
-    print("Anthropic sunucularına bağlanılıyor...\n")
-    modeller = client.models.list()
-    
-    print("--- API ANAHTARININ ERİŞEBİLDİĞİ MODELLER ---")
-    for model in modeller.data:
-        print(f"- {model.id}")
-    print("---------------------------------------------")
-except Exception as e:
-    print(f"Hata oluştu: {e}")
+def module_exists(name: str) -> bool:
+    return importlib.util.find_spec(name) is not None
+
+
+if __name__ == "__main__":
+    print("Tectora ortam kontrolü")
+    print("ANTHROPIC_API_KEY tanımlı:", bool(os.environ.get("ANTHROPIC_API_KEY")))
+    for module in ["fastapi", "pydantic", "uvicorn", "anthropic"]:
+        print(f"{module}:", module_exists(module))

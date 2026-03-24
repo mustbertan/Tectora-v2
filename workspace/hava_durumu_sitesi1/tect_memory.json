@@ -1,0 +1,26 @@
+{
+    "proje_amaci": "Bana hava durumunu gösteren bir site yap ama OpenWeather API anahtarını benim almam gerekiyor.",
+    "mimari_kararlar": [
+        "Vanilla HTML + CSS + JavaScript, OpenWeatherMap REST API entegrasyonu, tek sayfa uygulama"
+    ],
+    "dosya_yapisi": {
+        "index.html": "Tamamlandi",
+        "style.css": "Tamamlandi",
+        "HUMAN: https://openweathermap.org/api adresine git, ücretsiz hesap oluştur ve 'Current Weather Data' ile 'One Call API' için API anahtarını al": "BEKLIYOR",
+        "config.js": "Tamamlandi",
+        "HUMAN: Alınan OpenWeather API anahtarını config.js dosyasındaki API_KEY değişkenine yapıştır": "BEKLIYOR",
+        "api.js": "Tamamlandi",
+        "ui.js": "Tamamlandi",
+        "app.js": "Tamamlandi",
+        "HUMAN: index.html dosyasını tarayıcıda aç ve API anahtarının çalışıp çalışmadığını test et, konsol hatalarını kontrol et": "BEKLIYOR"
+    },
+    "tamamlanan_gorevler": [
+        1,
+        2,
+        4,
+        6,
+        7,
+        8,
+        9
+    ]
+}

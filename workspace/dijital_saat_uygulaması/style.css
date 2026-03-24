@@ -1,0 +1,202 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-color: #0a0a0f;
+  --text-color: #00fff7;
+  --text-shadow: 0 0 10px #00fff7, 0 0 20px #00fff7, 0 0 40px #00fff7, 0 0 80px #00c8ff;
+  --btn-bg: transparent;
+  --btn-color: #00fff7;
+  --btn-border: #00fff7;
+  --btn-shadow: 0 0 8px #00fff7, 0 0 16px #00fff7;
+  --btn-hover-bg: #00fff7;
+  --btn-hover-color: #0a0a0f;
+  --subtext-color: rgba(0, 255, 247, 0.5);
+}
+
+body.day-mode {
+  --bg-color: #f0f4f8;
+  --text-color: #1a1a2e;
+  --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  --btn-bg: transparent;
+  --btn-color: #1a1a2e;
+  --btn-border: #1a1a2e;
+  --btn-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+  --btn-hover-bg: #1a1a2e;
+  --btn-hover-color: #f0f4f8;
+  --subtext-color: rgba(26, 26, 46, 0.5);
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: 'Orbitron', monospace;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.6s ease, color 0.6s ease;
+  overflow: hidden;
+}
+
+.clock-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  padding: 48px;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.clock-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.clock-display {
+  font-size: clamp(3rem, 12vw, 8rem);
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  color: var(--text-color);
+  text-shadow: var(--text-shadow);
+  transition: color 0.6s ease, text-shadow 0.6s ease;
+  white-space: nowrap;
+  line-height: 1.1;
+  user-select: none;
+}
+
+.date-display {
+  font-size: clamp(0.75rem, 2.5vw, 1.1rem);
+  font-weight: 400;
+  letter-spacing: 0.2em;
+  color: var(--subtext-color);
+  text-transform: uppercase;
+  transition: color 0.6s ease;
+  user-select: none;
+}
+
+.theme-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 36px;
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(0.7rem, 2vw, 0.9rem);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--btn-color);
+  background-color: var(--btn-bg);
+  border: 2px solid var(--btn-border);
+  border-radius: 4px;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    color 0.4s ease,
+    background-color 0.4s ease,
+    border-color 0.6s ease,
+    box-shadow 0.4s ease;
+  box-shadow: var(--btn-shadow);
+  outline: none;
+  user-select: none;
+}
+
+.theme-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-color: var(--btn-hover-bg);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 0;
+}
+
+.theme-btn:hover::before {
+  transform: scaleX(1);
+}
+
+.theme-btn:hover {
+  color: var(--btn-hover-color);
+  box-shadow: none;
+}
+
+.theme-btn span {
+  position: relative;
+  z-index: 1;
+  transition: color 0.4s ease;
+}
+
+.theme-btn:active {
+  transform: scale(0.97);
+}
+
+.theme-btn .btn-icon {
+  position: relative;
+  z-index: 1;
+  font-size: 1.1em;
+  transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.theme-btn:hover .btn-icon {
+  transform: rotate(20deg) scale(1.2);
+}
+
+body:not(.day-mode) .scanline {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
+  );
+  z-index: 999;
+  opacity: 0.6;
+}
+
+body.day-mode .scanline {
+  opacity: 0;
+}
+
+.scanline {
+  transition: opacity 0.6s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+.colon {
+  display: inline-block;
+  animation: pulse 1s step-start infinite;
+}

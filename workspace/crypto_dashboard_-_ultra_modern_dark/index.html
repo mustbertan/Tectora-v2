@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dark: {
+                            900: '#0a0a0f',
+                            800: '#111118',
+                            700: '#1a1a2e',
+                            600: '#16213e',
+                            500: '#0f3460',
+                        }
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            font-family: 'Inter', sans-serif;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #111118;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #6366f1;
+            border-radius: 10px;
+        }
+
+        .sidebar-glow {
+            box-shadow: 4px 0 30px rgba(99, 102, 241, 0.08);
+        }
+
+        .card-btc {
+            background: linear-gradient(135deg, rgba(247, 147, 26, 0.15) 0%, rgba(247, 147, 26, 0.03) 100%);
+            border: 1px solid rgba(247, 147, 26, 0.2);
+        }
+
+        .card-btc:hover {
+            border-color: rgba(247, 147, 26, 0.5);
+            box-shadow: 0 0 30px rgba(247, 147, 26, 0.12);
+        }
+
+        .card-eth {
+            background: linear-gradient(135deg, rgba(98, 126, 234, 0.15) 0%, rgba(98, 126, 234, 0.03) 100%);
+            border: 1px solid rgba(98, 126, 234, 0.2);
+        }
+
+        .card-eth:hover {
+            border-color: rgba(98, 126, 234, 0.5);
+            box-shadow: 0 0 30px rgba(98, 126, 234, 0.12);
+        }
+
+        .card-sol {
+            background: linear-gradient(135deg, rgba(20, 241, 149, 0.15) 0%, rgba(20, 241, 149, 0.03) 100%);
+            border: 1px solid rgba(20, 241, 149, 0.2);
+        }
+
+        .card-sol:hover {
+            border-color: rgba(20, 241, 149, 0.5);
+            box-shadow: 0 0 30px rgba(20, 241, 149, 0.12);
+        }
+
+        .card-bnb {
+            background: linear-gradient(135deg, rgba(240, 185, 11, 0.15) 0%, rgba(240, 185, 11, 0.03) 100%);
+            border: 1px solid rgba(240, 185, 11, 0.2);
+        }
+
+        .card-ada {
+            background: linear-gradient(135deg, rgba(0, 51, 173, 0.25) 0%, rgba(0, 51, 173, 0.05) 100%);
+            border: 1px solid rgba(0, 112, 243, 0.3);
+        }
+
+        .card-xrp {
+            background: linear-gradient(135deg, rgba(0, 170, 228, 0.15) 0%, rgba(0, 170, 228, 0.03) 100%);
+            border: 1px solid rgba(0, 170, 228, 0.2);
+        }
+
+        .nav-item {
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 70%;
+            background: linear-gradient(180deg, #6366f1, #8b5cf6);
+            border-radius: 0 4px 4px 0;
+        }
+
+        .nav-item:hover {
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .glow-purple {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .glow-green {
+            box-shadow: 0 0 12px rgba(20, 241, 149, 0.5);
+        }
+
+        .glow-red {
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+        }
+
+        .search-bar {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .search-bar:focus {
+            background: rgba(99, 102, 241, 0.08);
+            border-color: rgba(99, 102, 241, 0.5);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .table-row {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+            transition: all 0.2s ease;
+        }
+
+        .table-row:hover {
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .mini-chart-container {
+            width: 80px;
+            height: 36px;
+        }
+
+        .status-dot {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-6px); }
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .badge-up {
+            background: rgba(20, 241, 149, 0.15);
+            color: #14f195;
+            border: 1px solid rgba(20, 241, 149, 0.25);
+        }
+
+        .badge-down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        .logo-gradient {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-glass {
+            background: rgba(10, 10, 15, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .notification-badge {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        }
+
+        .progress-bar {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        }
+
+        .sparkline-up {
+            filter: drop-shadow(0 0 4px rgba(20, 241, 149, 0.6));
+        }
+
+        .sparkline-down {
+            filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.6));
+        }
+
+        .volume-bar {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.6), rgba(99, 102, 241, 0.1));
+            border-radius: 2px 2px 0 0;
+        }
+
+        .ticker-wrap {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .ticker-move {
+            display: inline-block;
+            animation: ticker 25s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .main-chart-gradient {
+            background: linear-gradient(180deg, rgba(99, 102, 241, 0.1), transparent);
+        }
+    </style>
+</head>
+<body class="text-white min-h-screen">
+
+    <!-- Ana Grid Yapısı -->
+    <div class="flex h-screen overflow-hidden">
+
+        <!-- ===================== SIDEBAR ===================== -->
+        <aside class="w-64 flex-shrink-0 bg-dark-800 sidebar-glow flex flex-col z-20 overflow-y-auto" style="background: #111118;">
+            
+            <!-- Logo -->
+            <div class="p-6 flex items-center gap-3 border-b border-white border-opacity-5">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center glow-purple" style="background: linear-gradient(135deg, #6366f1, #8b5cf6);">
+                    <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-base font-bold logo-gradient tracking-tight">CryptoX</h1>
+                    <p class="text-xs text-gray-500 font-medium">Pro Dashboard</p>
+                </div>
+            </div>
+
+            <!-- Canlı Durum -->
+            <div class="mx-4 mt-4 mb-2 px-3 py-2 rounded-lg flex items-center gap-2" style="background: rgba(20, 241, 149, 0.08); border: 1px solid rgba(20, 241, 149, 0.15);">
+                <span class="w-2 h-2 rounded-full bg-green-400 status-dot flex-shrink-0"></span>
+                <span class="text-xs text-green-400 font-medium">Piyasa Canlı</span>
+                <span class="ml-auto text-xs text-gray-500" id="sidebar-time">--:--</span>
+            </div>
+
+            <!-- Navigasyon -->
+            <nav class="flex-1 px-3 py-2">
+                <p class="text-xs text-gray-600 font-semibold uppercase tracking-wider px-3 mb-2 mt-2">Ana Menü</p>
+                
+                <a href="#" class="nav-item active flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 cursor-pointer">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(99, 102, 241, 0.2);">
+                        <svg class="w-4 h-4 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm font-medium text-white">Dashboard</span>
+                    <span class="ml-auto text-xs px-1.5 py-0.5 rounded-md bg-indigo-500 bg-opacity-20 text-indigo-400 font-medium">Ana</span>
+                </a>
+
+                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 cursor-pointer">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(255,255,255,0.04);">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm font-medium text-gray-400">Piyasalar</span>
+                    <span class="ml-auto text-xs px-1.5 py-0.5 rounded-md bg-green-500 bg-opacity-10 text-green-400 font-medium">Canlı</span>
+                </a>
+
+                <a href="#" class="nav-item flex items-center gap-3 px-3 py-2.5 rounded-xl mb-1 cursor-pointer">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" style="background: rgba(255,255,255,0.04);">
+                        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round

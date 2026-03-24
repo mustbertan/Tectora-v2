@@ -1,0 +1,13 @@
+{
+    "proje_amaci": "Kullanıcının girdiği metni bir QR koda dönüştüren ve bu kodu ekranda gösteren modern bir web sayfası yap. JavaScript modülleri kullan (api.js, ui.js, app.js şeklinde parçala). Tasarım karanlık tema (dark mode) olsun.",
+    "mimari_kararlar": [
+        "Vanilla JS Modüler Mimari - index.html, api.js, ui.js, app.js dosyalarından oluşan, dark mode tasarımlı QR kod üretici uygulama"
+    ],
+    "dosya_yapisi": {
+        "index.html": "Tamamlandi",
+        "style.css": "Tamamlandi",
+        "api.js": "Tamamlandi",
+        "ui.js": "Tamamlandi"
+    },
+    "tamamlanan_gorevler": []
+}

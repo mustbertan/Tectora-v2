@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hava Durumu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="app-header">
+            <h1><i class="fas fa-cloud-sun"></i> Hava Durumu</h1>
+        </header>
+
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="cityInput" placeholder="Şehir adı girin..." autocomplete="off">
+                <button id="searchBtn">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button id="locationBtn" title="Konumumu kullan">
+                    <i class="fas fa-location-arrow"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="loadingSpinner" class="loading-spinner hidden">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p>Yükleniyor...</p>
+        </div>
+
+        <div id="errorMessage" class="error-message hidden">
+            <i class="fas fa-exclamation-triangle"></i>
+            <p id="errorText"></p>
+        </div>
+
+        <main id="weatherContent" class="weather-content hidden">
+            <section class="current-weather">
+                <div class="weather-card main-card">
+                    <div class="location-info">
+                        <h2 id="cityName"></h2>
+                        <p id="countryName"></p>
+                        <p id="currentDate"></p>
+                    </div>
+                    <div class="temp-info">
+                        <img id="weatherIcon" src="" alt="Hava durumu ikonu">
+                        <div class="temperature">
+                            <span id="currentTemp"></span>
+                            <div class="temp-toggle">
+                                <button id="celsiusBtn" class="active">°C</button>
+                                <span>|</span>
+                                <button id="fahrenheitBtn">°F</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weather-desc">
+                        <p id="weatherDescription"></p>
+                        <p id="feelsLike"></p>
+                    </div>
+                    <div class="weather-details">
+                        <div class="detail-item">
+                            <i class="fas fa-tint"></i>
+                            <span>Nem</span>
+                            <strong id="humidity"></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-wind"></i>
+                            <span>Rüzgar</span>
+                            <strong id="windSpeed"></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-eye"></i>
+                            <span>Görüş</span>
+                            <strong id="visibility"></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-compress-arrows-alt"></i>
+                            <span>Basınç</span>
+                            <strong id="pressure"></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-sun"></i>
+                            <span>Gündoğumu</span>
+                            <strong id="sunrise"></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-moon"></i>
+                            <span>Günbatımı</span>
+                            <strong id="sunset"></strong>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="forecast-section">
+                <h3><i class="fas fa-calendar-alt"></i> 5 Günlük Tahmin</h3>
+                <div id="forecastContainer" class="forecast-container"></div>
+            </section>
+
+            <section class="hourly-section">
+                <h3><i class="fas fa-clock"></i> Saatlik Tahmin</h3>
+                <div id="hourlyContainer" class="hourly-container"></div>
+            </section>
+        </main>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="api.js"></script>
+    <script src="ui.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+    "proje_amaci": "Kripto paraların canlı fiyatlarını listeleyen (sahte veri de olabilir), grafik alanı olan, çok şık bir 'Crypto Dashboard' (Yönetim Paneli) yap. Sol tarafta bir menü çubuğu, üstte bir arama çubuğu ve kartlar şeklinde fiyatlar olsun. Tailwind CSS kullan ve tasarım 'Ultra Modern Dark' olsun.",
+    "mimari_kararlar": [
+        "Vanilla HTML5 + Tailwind CSS CDN + Vanilla JS (Sahte Veri ile Canlı Simülasyon)"
+    ],
+    "dosya_yapisi": {
+        "index.html": "Tamamlandi",
+        "style.css": "Tamamlandi",
+        "app.js": "Tamamlandi"
+    },
+    "tamamlanan_gorevler": []
+}

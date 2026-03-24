@@ -1,0 +1,12 @@
+{
+    "proje_amaci": "Saniyeyi de gösteren dijital bir saat uygulaması yap. Saat ekranın tam ortasında büyük ve şık bir fontla görünsün. Altında bir buton olsun; bu buton sayfanın temasını 'Gece' ve 'Gündüz' modları arasında değiştirsin. HTML, CSS ve JS dosyalarını birbirinden ayır.",
+    "mimari_kararlar": [
+        "Vanilla HTML/CSS/JS - Tek sayfa uygulama, üç ayrı dosya: index.html (yapı), style.css (tema ve tasarım), app.js (saat mantığı ve tema değiştirici)"
+    ],
+    "dosya_yapisi": {
+        "index.html": "Tamamlandi",
+        "style.css": "Tamamlandi",
+        "app.js": "Tamamlandi"
+    },
+    "tamamlanan_gorevler": []
+}
